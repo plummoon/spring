@@ -4,19 +4,25 @@ package leo.spring4.rest.controller;
  * Created by plumm on 2016-10-10.
  */
 
+import leo.spring4.rest.bean.Employee;
+import leo.spring4.rest.bean.EmployeeList;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
+import java.util.List;
 
 @Controller
 public class EmployeeController {
+    private static final String XML_VIEW_NAME = "employees";
+
     @RequestMapping(method = RequestMethod.GET, value = "/employee/{id}")
     public ModelAndView getEmployee(@PathVariable String id) {
         Employee e = employeeDS.get(Long.parseLong(id));
