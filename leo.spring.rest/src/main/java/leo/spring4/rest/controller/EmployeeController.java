@@ -16,13 +16,14 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
 
 @Controller
-    public class EmployeeController {
+public class EmployeeController {
     @RequestMapping(method = RequestMethod.GET, value = "/employee/{id}")
     public ModelAndView getEmployee(@PathVariable String id) {
         Employee e = employeeDS.get(Long.parseLong(id));
         return new ModelAndView(XML_VIEW_NAME, "object", e);
     }
-    @RequestMapping(method=RequestMethod.POST, value="/employee")
+
+    @RequestMapping(method = RequestMethod.POST, value = "/employee")
     public ModelAndView addEmployee(@RequestBody String body) {
         Source source = new StreamSource(new StringReader(body));
         Employee e = (Employee) jaxb2Mashaller.unmarshal(source);
@@ -30,7 +31,7 @@ import java.io.StringReader;
         return new ModelAndView(XML_VIEW_NAME, "object", e);
     }
 
-    @RequestMapping(method=RequestMethod.PUT, value="/employee/{id}")
+    @RequestMapping(method = RequestMethod.PUT, value = "/employee/{id}")
     public ModelAndView updateEmployee(@RequestBody String body) {
         Source source = new StreamSource(new StringReader(body));
         Employee e = (Employee) jaxb2Mashaller.unmarshal(source);
@@ -38,7 +39,7 @@ import java.io.StringReader;
         return new ModelAndView(XML_VIEW_NAME, "object", e);
     }
 
-    @RequestMapping(method=RequestMethod.DELETE, value="/employee/{id}")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/employee/{id}")
     public ModelAndView removeEmployee(@PathVariable String id) {
         employeeDS.remove(Long.parseLong(id));
         List<Employee> employees = employeeDS.getAll();
