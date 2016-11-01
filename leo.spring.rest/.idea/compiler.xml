@@ -26,7 +26,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="leo.spring.rest" target="1.5" />
+      <module name="leo.spring.rest" target="1.6" />
     </bytecodeTargetLevel>
   </component>
 </project>

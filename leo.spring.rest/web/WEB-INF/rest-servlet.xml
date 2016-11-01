@@ -2,15 +2,21 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     <context:component-scan base-package="leo.spring4.rest.controller" />
-
+    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
     <!--To enable @RequestMapping process on type level and method level-->
     <!--<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />-->
     <!--<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />-->
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" />
 
+    <bean id="employeeController" class="leo.spring4.rest.controller.EmployeeController">
+        <property name="employeeDS" ref="employeeDS" />
+        <property name="jaxb2Mashaller" ref="jaxbMarshaller" />
+        <property name="employeeService" ref="employeeService"/>
+    </bean>
     <!--Use JAXB OXM marshaller to marshall/unmarshall following class-->
     <bean id="jaxbMarshaller"
           class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
@@ -31,22 +37,38 @@
             <!--"org.springframework.web.servlet.view.BeanNameViewResolver" />-->
 
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-        <property name="mediaTypes">
-            <map>
-                <entry key="xml" value="application/xml"/>
-                <entry key="html" value="text/html"/>
-            </map>
-        </property>
+        <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
         <property name="viewResolvers">
             <list>
                 <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
                 <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
                     <property name="viewClass" value=
                             "org.springframework.web.servlet.view.JstlView"/>
-                    <property name="prefix" value="/WEB-INF/jsp/"/>
+                    <property name="prefix" value="/WEB-INF/views/"/>
                     <property name="suffix" value=".jsp"/>
                 </bean>
             </list>
+        </property>
+    </bean>
+    <!--
+        Setup a simple strategy:
+           1. Only path extension is taken into account, Accept headers are ignored.
+           2. Return HTML by default when not sure.
+     -->
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="false" />
+        <property name="favorParameter" value="true" />
+        <property name="parameterName" value="mediaType" />
+        <property name="ignoreAcceptHeader" value="true"/>
+        <property name="useJaf" value="false"/>
+        <!-- 在没有扩展名时即: "/user/1" 时的默认展现形式 -->
+        <property name="defaultContentType" value="text/html"/>
+        <property name="mediaTypes">
+            <map>
+                <entry key="json" value="application/json" />
+                <entry key="xml" value="application/xml"/>
+                <entry key="html" value="text/html"/>
+            </map>
         </property>
     </bean>
 </beans>

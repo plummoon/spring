@@ -9,6 +9,7 @@ import javax.xml.transform.stream.StreamSource;
 import leo.spring4.rest.bean.Employee;
 import leo.spring4.rest.bean.EmployeeList;
 import leo.spring4.rest.ds.EmployeeDS;
+import leo.spring4.rest.service.EmployeeService;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class EmployeeController {
+
+    private EmployeeService employeeService;
 
     private EmployeeDS employeeDS;
 
@@ -33,6 +36,7 @@ public class EmployeeController {
     }
 
     private static final String XML_VIEW_NAME = "employees";
+
 
     @RequestMapping(method=RequestMethod.GET, value="/employee/{id}")
     public ModelAndView getEmployee(@PathVariable String id) {
@@ -66,9 +70,16 @@ public class EmployeeController {
 
     @RequestMapping(method=RequestMethod.GET, value="/employees")
     public ModelAndView getEmployees() {
-        List<Employee> employees = employeeDS.getAll();
-        EmployeeList list = new EmployeeList(employees);
-        return new ModelAndView(XML_VIEW_NAME, "employees", list);
+        return new ModelAndView(XML_VIEW_NAME, "employees", employeeService.GetEmployee());
     }
+//    @RequestMapping(method=RequestMethod.GET, value="/employees")
+//    public ModelAndView getEmployees() {
+//        List<Employee> employees = employeeDS.getAll();
+//        EmployeeList list = new EmployeeList(employees);
+//        return new ModelAndView(XML_VIEW_NAME, "employees", list);
+//    }
 
+    public void setEmployeeService(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 }
