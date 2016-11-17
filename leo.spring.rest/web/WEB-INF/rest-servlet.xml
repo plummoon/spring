@@ -40,8 +40,10 @@
         <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
         <property name="viewResolvers">
             <list>
-                <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
-                <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+                <bean class="leo.spring4.rest.viewresolver.JsonViewResolver"></bean>
+                <!--<bean class="leo.spring4.rest.viewresolver.PdfViewResolver"></bean>-->
+                <!--<bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>-->
+                <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
                     <property name="viewClass" value=
                             "org.springframework.web.servlet.view.JstlView"/>
                     <property name="prefix" value="/WEB-INF/views/"/>
@@ -49,7 +51,20 @@
                 </bean>
             </list>
         </property>
+        <property name="defaultViews">
+            <list>
+                <bean  class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+                    <property  name="extractValueFromSingleKeyModel" value="true" />
+                </bean>
+                <!--<bean  class="org.springframework.web.servlet.view.xml.MarshallingView">-->
+                    <!--<property name="marshaller">-->
+                        <!--<bean  class="org.springframework.oxm.xstream.XStreamMarshaller" />-->
+                    <!--</property>-->
+                <!--</bean>-->
+            </list>
+        </property>
     </bean>
+    <bean id="content" class="leo.spring4.rest.viewresolver.JsonViewResolver"/>
     <!--
         Setup a simple strategy:
            1. Only path extension is taken into account, Accept headers are ignored.
@@ -62,12 +77,14 @@
         <property name="ignoreAcceptHeader" value="true"/>
         <property name="useJaf" value="false"/>
         <!-- 在没有扩展名时即: "/user/1" 时的默认展现形式 -->
-        <property name="defaultContentType" value="text/html"/>
+        <property name="defaultContentType" value="application/xml"/>
         <property name="mediaTypes">
             <map>
                 <entry key="json" value="application/json" />
                 <entry key="xml" value="application/xml"/>
                 <entry key="html" value="text/html"/>
+                <entry key="do" value="text/html"/>
+                <entry key="qd" value="text/html"/>
             </map>
         </property>
     </bean>

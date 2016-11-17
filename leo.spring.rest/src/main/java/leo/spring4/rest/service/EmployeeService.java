@@ -1,5 +1,6 @@
 package leo.spring4.rest.service;
 
+import leo.spring4.rest.bean.Employee;
 import leo.spring4.rest.bean.EmployeeList;
 
 /**
@@ -13,4 +14,6 @@ public interface EmployeeService {
      * @return 雇员列表
      */
     EmployeeList GetEmployee();
+
+    Employee GetEmployeeById(String id);
 }

@@ -8,7 +8,8 @@ import leo.spring4.rest.service.EmployeeService;
 import java.util.List;
 
 /**
- * Created by YueLi on 16/10/30.
+ * @author YueLi
+ * @date 16/10/30
  */
 public class EmployeeServiceImpl implements EmployeeService {
 
@@ -21,5 +22,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeList GetEmployee() {
         List<Employee> employees = employeeDS.getAll();
         return new EmployeeList(employees);
+    }
+
+    @Override
+    public Employee GetEmployeeById(String id) {
+        return employeeDS.get(Long.parseLong(id));
     }
 }

@@ -1,7 +1,9 @@
 package leo.spring4.rest.controller;
 
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -12,10 +14,7 @@ import leo.spring4.rest.ds.EmployeeDS;
 import leo.spring4.rest.service.EmployeeService;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -40,8 +39,13 @@ public class EmployeeController {
 
     @RequestMapping(method=RequestMethod.GET, value="/employee/{id}")
     public ModelAndView getEmployee(@PathVariable String id) {
-        Employee e = employeeDS.get(Long.parseLong(id));
-        return new ModelAndView(XML_VIEW_NAME, "object", e);
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        Employee employee = employeeService.GetEmployeeById(id);
+        map.put("id", employee.getId());
+        map.put("email", employee.getEmail());
+        map.put("pro", employee);
+        return new ModelAndView(XML_VIEW_NAME, "object", map);
     }
 
     @RequestMapping(method=RequestMethod.PUT, value="/employee/{id}")
@@ -59,18 +63,25 @@ public class EmployeeController {
         employeeDS.add(e);
         return new ModelAndView(XML_VIEW_NAME, "object", e);
     }
-
-    @RequestMapping(method=RequestMethod.DELETE, value="/employee/{id}")
+    @DeleteMapping("/employee/{id}")
     public ModelAndView removeEmployee(@PathVariable String id) {
         employeeDS.remove(Long.parseLong(id));
         List<Employee> employees = employeeDS.getAll();
         EmployeeList list = new EmployeeList(employees);
-        return new ModelAndView(XML_VIEW_NAME, "employees", list);
+        return new ModelAndView(XML_VIEW_NAME, "object", list);
     }
 
-    @RequestMapping(method=RequestMethod.GET, value="/employees")
+    @GetMapping("/employees")
     public ModelAndView getEmployees() {
         return new ModelAndView(XML_VIEW_NAME, "employees", employeeService.GetEmployee());
+    }
+
+    @GetMapping("/content")
+    public ModelAndView getContent() {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("content");
+        mav.addObject("sampleContentList", employeeService.GetEmployee());
+        return mav;
     }
 //    @RequestMapping(method=RequestMethod.GET, value="/employees")
 //    public ModelAndView getEmployees() {
