@@ -28,20 +28,22 @@
         </property>
     </bean>
 
-    <bean id="employees" class=
-            "org.springframework.web.servlet.view.xml.MarshallingView">
-        <constructor-arg ref="jaxbMarshaller" />
-    </bean>
+    <!--<bean id="employees" class=-->
+            <!--"org.springframework.web.servlet.view.xml.MarshallingView">-->
+        <!--<constructor-arg ref="jaxbMarshaller" />-->
+    <!--</bean>-->
 
     <!--<bean id="viewResolver" class=-->
             <!--"org.springframework.web.servlet.view.BeanNameViewResolver" />-->
-
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
         <property name="viewResolvers">
             <list>
-                <bean class="leo.spring4.rest.viewresolver.JsonViewResolver"></bean>
-                <!--<bean class="leo.spring4.rest.viewresolver.PdfViewResolver"></bean>-->
+                <bean id="jsonViewResolver" class="leo.spring4.rest.viewresolver.JsonViewResolver">
+                </bean>
+                <bean id="jaxb2MarshallingXmlViewResolver" class="leo.spring4.rest.viewresolver.Jaxb2MarshallingXmlViewResolver">
+                    <constructor-arg ref="jaxbMarshaller"/>
+                </bean>
                 <!--<bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>-->
                 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
                     <property name="viewClass" value=
@@ -64,7 +66,6 @@
             </list>
         </property>
     </bean>
-    <bean id="content" class="leo.spring4.rest.viewresolver.JsonViewResolver"/>
     <!--
         Setup a simple strategy:
            1. Only path extension is taken into account, Accept headers are ignored.
